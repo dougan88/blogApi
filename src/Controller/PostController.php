@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use Doctrine\ORM\EntityManager;
-use Symfony\Flex\Response;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -39,22 +40,24 @@ class PostController extends Controller
         $errors = $validator->validate($post);
 
         if (count($errors) > 0) {
-            return $this->json([
+
+            return new JsonResponse([
                 'success' => null,
-                'errors' => (string) $errors,
-            ]);
+                'error' => true,
+                'result' => (string) $errors,
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $entityManager->persist($post);
 
         $entityManager->flush();
 
-        return $this->json([
+        return new JsonResponse([
             'success' => true,
-            'errors' => null,
+            'error' => null,
             'result' => [
                 'id' => $post->getId(),
-            ],
+            ], Response::HTTP_OK,
         ]);
     }
 
