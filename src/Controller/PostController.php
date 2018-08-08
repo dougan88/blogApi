@@ -70,9 +70,40 @@ class PostController extends AbstractController
     }
 
     /**
+     * @Route("/posts/{id}", name="update_one", methods={"PUT"})s
+     */
+    public function updateOne($id, EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator)
+    {
+        $post = $this->getDoctrine()
+            ->getRepository(Post::class)
+            ->find($id);
+
+        if (!$post) {
+            return new JsonResponse([
+                'success' => null,
+                'error' => true,
+                'result' => 'Post not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $post = $post->updatePost($request->getContent());
+        $entityManager->flush();
+
+        $response = $this->formatResponse($post);
+
+        return new JsonResponse([
+            'success' => true,
+            'error' => null,
+            'result' => [
+                'posts' => $response,
+            ], Response::HTTP_OK,
+        ]);
+    }
+
+    /**
      * @Route("/posts", name="post", methods={"POST"})
      */
-    public function create(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator)
+    public function createOne(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator)
     {
         $postData = $this->getPostDataFromRequest($request->getContent());
         $post->setTitle($postData['title']);

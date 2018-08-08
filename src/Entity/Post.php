@@ -130,4 +130,27 @@ class Post
 
         return $this;
     }
+
+    public function updatePost(string $requestJson) : Post
+    {
+        $postData = json_decode($requestJson);
+
+        if (!empty($postData->title)) {
+            $this->setTitle($postData->title);
+        }
+
+        if (!empty($postData->body)) {
+            $this->setBody($postData->body);
+        }
+
+        if (!empty($postData->published)) {
+            $this->setPublished($postData->published);
+        }
+
+        if (!empty($postData->publication_date)) {
+            $this->setPublicationDate(new \DateTime($postData->publication_date));
+        }
+
+        return $this;
+    }
 }
