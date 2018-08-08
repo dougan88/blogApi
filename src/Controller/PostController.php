@@ -101,6 +101,33 @@ class PostController extends AbstractController
     }
 
     /**
+     * @Route("/posts/{id}", name="delete_one", methods={"DELETE"})
+     */
+    public function deleteOne($id, EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator)
+    {
+        $post = $this->getDoctrine()
+            ->getRepository(Post::class)
+            ->find($id);
+
+        if (!$post) {
+            return new JsonResponse([
+                'success' => null,
+                'error' => true,
+                'result' => 'Post not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $entityManager->remove($post);
+        $entityManager->flush();
+
+        return new JsonResponse([
+            'success' => true,
+            'error' => null,
+            'result' => 'Post was deleted'
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * @Route("/posts", name="post", methods={"POST"})
      */
     public function createOne(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator)
