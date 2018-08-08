@@ -55,6 +55,31 @@ class PostController extends Controller
     }
 
     /**
+     * @Route("/posts/{id}", name="get_one", methods={"GET"})
+     */
+    public function getOne($id)
+    {
+        $post = $this->getDoctrine()
+            ->getRepository(Post::class)
+            ->find($id);
+
+        $response = [
+            'title' => $post->getTitle(),
+            'body' => $post->getBody(),
+            'publication_date' => $post->getPublicationDate(),
+            'published' => $post->getPublished(),
+        ];
+
+        return new JsonResponse([
+            'success' => true,
+            'error' => null,
+            'result' => [
+                'posts' => $response,
+            ], Response::HTTP_OK,
+        ]);
+    }
+
+    /**
      * @Route("/posts", name="post", methods={"POST"})
      */
     public function create(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator)
