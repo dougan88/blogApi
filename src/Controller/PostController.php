@@ -10,9 +10,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class PostController extends Controller
+class PostController extends AbstractController
 {
     /**
      * @Route("/posts", name="post")
@@ -37,12 +37,7 @@ class PostController extends Controller
         $response = [];
 
         foreach ($posts as $post) {
-            $response[] = [
-                'title' => $post->getTitle(),
-                'body' => $post->getBody(),
-                'publication_date' => $post->getPublicationDate(),
-                'published' => $post->getPublished(),
-            ];
+            $response[] = $this->formatResponse($post);
         }
 
         return new JsonResponse([
@@ -63,12 +58,7 @@ class PostController extends Controller
             ->getRepository(Post::class)
             ->find($id);
 
-        $response = [
-            'title' => $post->getTitle(),
-            'body' => $post->getBody(),
-            'publication_date' => $post->getPublicationDate(),
-            'published' => $post->getPublished(),
-        ];
+        $response = $this->formatResponse($post);
 
         return new JsonResponse([
             'success' => true,
@@ -125,6 +115,16 @@ class PostController extends Controller
             'published' => $postData->published ?? false,
             'publication_date' => $postData->publication_date ?? new \DateTime(),
             'tag' => $postData->tag ?? ''
+        ];
+    }
+
+    private function formatResponse(Post $post)
+    {
+        return [
+            'title' => $post->getTitle(),
+            'body' => $post->getBody(),
+            'publication_date' => $post->getPublicationDate(),
+            'published' => $post->getPublished(),
         ];
     }
 }
