@@ -17,21 +17,15 @@ class PostController extends AbstractController
     /**
      * @Route("/posts/all/{publishedOnly}/{dateOrder}", name="get_all", methods={"GET"})
      */
-    public function getAll(?bool $publishedOnly = false, ?int $dateOrder = 0)
+    public function getAll(?int $publishedOnly = 0, ?int $dateOrder = 0)
     {
         $dateOrder = $dateOrder ? 'ASC' : 'DESC';
-        if ($publishedOnly) {
-            $posts = $this->getDoctrine()
-                ->getRepository(Post::class)
-                ->findBy(['published' => true],
-                    ['publication_date' => $dateOrder]);
+        $conditions = $publishedOnly ? ['published' => true] : [];
 
-        } else {
-            $posts = $this->getDoctrine()
-                ->getRepository(Post::class)
-                ->findBy([],
-                    ['publication_date' => $dateOrder]);
-        }
+        $posts = $this->getDoctrine()
+            ->getRepository(Post::class)
+            ->findBy($conditions,
+                ['publication_date' => $dateOrder]);
 
         $response = [];
 
