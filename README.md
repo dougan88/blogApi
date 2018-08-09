@@ -89,3 +89,39 @@ GET: http://blog.test/posts/all/[published posts only: 1/0]/[sort order: ASC/DES
     }
 }
 ```
+
+#### Updating a post:
+```
+PUT: http://symfony.test/posts/[post id]
+     http://symfony.test/posts/9
+```
+
+```json
+{
+  "title":"Updated title", 
+  "body": "Updated body",
+  "published": "true"
+}
+```
+---------------
+
+#### Response:
+
+```json
+{
+    "success":true,
+    "error":null,
+    "result": {
+        "posts": {
+            "title":"Updated title",
+            "body":"Updated body",
+            "publication_date": {
+                "date":"2018-08-09 17:49:46.000000",
+                "timezone_type":3,
+                "timezone":"UTC"
+            },
+            "published":true
+        }
+    }
+}
+```
