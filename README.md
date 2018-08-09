@@ -125,3 +125,20 @@ PUT: http://symfony.test/posts/[post id]
     }
 }
 ```
+
+#### Deleting a post:
+```
+DELETE: http://symfony.test/posts/[post id]
+        http://symfony.test/posts/9
+```
+---------------
+
+#### Response:
+
+```json
+{
+    "success": true,
+    "error": null,
+    "result": "Post was deleted"
+}
+```
