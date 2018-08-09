@@ -28,7 +28,11 @@ Run migrations:
 ./bin/console doctrine:migrations:migrate
 ```
 
-Creating a new post:
+#### Creating a new post:
+```
+POST: http://symfony.test/posts
+```
+
 ```json
 {
   "title":"testTitle", 
