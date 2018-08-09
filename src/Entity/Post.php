@@ -153,4 +153,30 @@ class Post
 
         return $this;
     }
+
+    public function createPost(string $requestJson) : Post
+    {
+        $postData = $this->getPostDataFromRequest($requestJson);
+
+        $this->setTitle($postData['title']);
+        $this->setBody($postData['body']);
+        $this->setPublished($postData['published']);
+        $this->setPublicationDate($postData['publication_date']);
+//        $this->addTag($postData['tag']);
+
+        return $this;
+    }
+
+    private function getPostDataFromRequest(string $requestJson)
+    {
+        $postData = json_decode($requestJson);
+
+        return [
+            'title' => $postData->title ?? '',
+            'body' => $postData->body ?? '',
+            'published' => $postData->published ?? false,
+            'publication_date' => $postData->publication_date ?? new \DateTime(),
+            'tag' => $postData->tag ?? ''
+        ];
+    }
 }

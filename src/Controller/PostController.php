@@ -137,12 +137,7 @@ class PostController extends AbstractController
      */
     public function createOne(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator)
     {
-        $postData = $this->getPostDataFromRequest($request->getContent());
-        $post->setTitle($postData['title']);
-        $post->setBody($postData['body']);
-        $post->setPublished($postData['published']);
-        $post->setPublicationDate($postData['publication_date']);
-//        $post->addTag($postData['tag']);
+        $post = $post->createPost($request->getContent());
 
         $errors = $validator->validate($post);
 
@@ -165,19 +160,6 @@ class PostController extends AbstractController
             'result' => [
                 'id' => $post->getId(),
             ]], Response::HTTP_OK);
-    }
-
-    private function getPostDataFromRequest(string $requestJson)
-    {
-        $postData = json_decode($requestJson);
-
-        return [
-            'title' => $postData->title ?? '',
-            'body' => $postData->body ?? '',
-            'published' => $postData->published ?? false,
-            'publication_date' => $postData->publication_date ?? new \DateTime(),
-            'tag' => $postData->tag ?? ''
-        ];
     }
 
     private function formatResponse(Post $post)
