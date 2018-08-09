@@ -44,3 +44,16 @@ POST: http://symfony.test/posts
     ]
 }
 ```
+---------------
+
+#### Response:
+
+```json
+{
+  "success": true,
+  "error": null,
+  "result": {
+    "id": 9
+  }
+}
+```
