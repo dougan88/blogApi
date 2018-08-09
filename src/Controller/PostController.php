@@ -15,30 +15,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class PostController extends AbstractController
 {
     /**
-     * @Route("/posts", name="post")
+     * @Route("/posts/all/{publishedOnly}/{dateOrder}", name="get_all", methods={"GET"})
      */
-    public function index()
+    public function getAll(?bool $publishedOnly = false, ?int $dateOrder = 0)
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/PostController.php',
-        ]);
-    }
-
-    /**
-     * @Route("/posts/{publishedOnly}/{dateOrder}", name="get_all", methods={"GET"})
-     */
-    public function getAll(?bool $publishedOnly = false, string $dateOrder = 'DESC')
-    {
+        $dateOrder = $dateOrder ? 'ASC' : 'DESC';
         if ($publishedOnly) {
             $posts = $this->getDoctrine()
                 ->getRepository(Post::class)
                 ->findBy(['published' => true],
                     ['publication_date' => $dateOrder]);
+
         } else {
             $posts = $this->getDoctrine()
                 ->getRepository(Post::class)
-                ->findAll();
+                ->findBy([],
+                    ['publication_date' => $dateOrder]);
         }
 
         $response = [];
@@ -57,7 +49,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/posts/{id}", name="get_one", methods={"GET"})
+     * @Route("/posts/one/{id}", name="get_one", methods={"GET"})
      */
     public function getOne($id)
     {
