@@ -84,6 +84,7 @@ GET: http://blog.test/posts/all/[published posts only: 1/0]/[sort order: ASC/DES
         },
         "published": false
       }
+    ],
   }
 }
 ```
