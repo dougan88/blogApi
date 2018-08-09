@@ -17,18 +17,22 @@ class PostController extends AbstractController
 {
     /**
      * @Route("/posts/all/{publishedOnly}/{dateOrder}/{tag}", name="get_all", methods={"GET"})
+     *
+     * Retrieves all posts, filtered by published, publication date and tag.
      */
     public function getAll(?int $publishedOnly = 0, ?int $dateOrder = 0, ?string $tag = '') : JsonResponse
     {
         $dateOrder = $dateOrder ? 'ASC' : 'DESC';
         $published = $publishedOnly ? true : false;
 
+        //Use repository method, specially written for required filters
         $posts = $this->getDoctrine()
             ->getRepository(Post::class)
             ->findManyByTagName($tag, $published, $dateOrder);
 
         $response = [];
 
+        //Formatting response before rendering
         foreach ($posts as $post) {
             $response[] = $this->formatResponse($post);
         }
@@ -44,6 +48,8 @@ class PostController extends AbstractController
 
     /**
      * @Route("/posts/one/{id}", name="get_one", methods={"GET"})
+     *
+     * Retrieves one post by id
      */
     public function getOne($id) : JsonResponse
     {
@@ -51,6 +57,7 @@ class PostController extends AbstractController
             ->getRepository(Post::class)
             ->find($id);
 
+        //Formatting response before rendering
         $response = $this->formatResponse($post);
 
         return new JsonResponse([
@@ -62,7 +69,9 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/posts/{id}", name="update_one", methods={"PUT"})s
+     * @Route("/posts/{id}", name="update_one", methods={"PUT"})
+     *
+     * Updates specified post with a new data
      */
     public function updateOne($id, EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator) : JsonResponse
     {
@@ -70,6 +79,7 @@ class PostController extends AbstractController
             ->getRepository(Post::class)
             ->find($id);
 
+        //If no post with specified id return not found error
         if (!$post) {
             return new JsonResponse([
                 'success' => null,
@@ -81,6 +91,7 @@ class PostController extends AbstractController
         $post = $post->updatePost($request->getContent());
         $entityManager->flush();
 
+        //Formatting response before rendering
         $response = $this->formatResponse($post);
 
         return new JsonResponse([
@@ -93,6 +104,8 @@ class PostController extends AbstractController
 
     /**
      * @Route("/posts/{id}", name="delete_one", methods={"DELETE"})
+     *
+     * Deletes specified post
      */
     public function deleteOne($id, EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator) : JsonResponse
     {
@@ -120,6 +133,8 @@ class PostController extends AbstractController
 
     /**
      * @Route("/posts", name="post", methods={"POST"})
+     *
+     * Creates post with specifie data
      */
     public function createOne(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator, ContainerInterface $container,\Swift_Mailer $mailer) : JsonResponse
     {
@@ -140,10 +155,12 @@ class PostController extends AbstractController
 
         $entityManager->flush();
 
+        //For saved post we add tags if there are any
         $post = $this->setTags($request->getContent(), $post);
 
         $adminEmail = $container->getParameter('admin.email');
 
+        //Sending an email that post was created
         if ($adminEmail) {
             $this->sendCreatedEmail($adminEmail, $mailer);
         }
@@ -156,6 +173,12 @@ class PostController extends AbstractController
             ]], Response::HTTP_OK);
     }
 
+    /**
+     * Commonly used formatting helper
+     *
+     * @param Post $post
+     * @return array
+     */
     private function formatResponse(Post $post) : array
     {
         return [
@@ -166,6 +189,13 @@ class PostController extends AbstractController
         ];
     }
 
+    /**
+     * Persisting or creating new tags if there's no tag with specified name
+     *
+     * @param string $requestJson
+     * @param Post $post
+     * @return Post
+     */
     private function setTags(string $requestJson, Post $post) : Post
     {
         $postData = json_decode($requestJson);
@@ -198,6 +228,13 @@ class PostController extends AbstractController
         return $post;
     }
 
+    /**
+     * Wrap email sending
+     *
+     * @param string $adminEmail
+     * @param \Swift_Mailer $mailer
+     * @return int
+     */
     private function sendCreatedEmail(string $adminEmail, \Swift_Mailer $mailer)
     {
         $message = (new \Swift_Message('Post Created'))

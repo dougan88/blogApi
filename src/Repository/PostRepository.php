@@ -21,7 +21,9 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Post[] Returns an array of Post objects filtered by tag, published and publication_date
+     * @return Post[]
+     *
+     * Returns an array of Post objects filtered by tag, published and publication_date
      */
     public function findManyByTagName(string $tagName, bool $published, string $dateOrder)
     {

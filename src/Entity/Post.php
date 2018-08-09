@@ -131,6 +131,12 @@ class Post
         return $this;
     }
 
+    /**
+     * Standalone function for updating post, placed in Entity as a piece of business logic
+     *
+     * @param string $requestJson
+     * @return Post
+     */
     public function updatePost(string $requestJson) : Post
     {
         $postData = json_decode($requestJson);
@@ -154,6 +160,12 @@ class Post
         return $this;
     }
 
+    /**
+     * Standalone function for creating post, placed in Entity as a piece of business logic
+     *
+     * @param string $requestJson
+     * @return Post
+     */
     public function createPost(string $requestJson) : Post
     {
         $postData = $this->getPostDataFromRequest($requestJson);
@@ -166,6 +178,12 @@ class Post
         return $this;
     }
 
+    /**
+     * Retrieves data structure which is ready to use for post creation
+     *
+     * @param string $requestJson
+     * @return array
+     */
     private function getPostDataFromRequest(string $requestJson)
     {
         $postData = json_decode($requestJson);
