@@ -27,3 +27,12 @@ Run migrations:
 ```
 ./bin/console doctrine:migrations:migrate
 ```
+
+Creating a new post:
+```json
+{
+"title":"testTitle", 
+"body": "bodySeveneight", 
+"tag":["sport", "science"]
+}
+```
