@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\OrderBy;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -17,6 +18,27 @@ class PostRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Post::class);
+    }
+
+    /**
+     * @return Post[] Returns an array of Post objects filtered by tag, published and publication_date
+     */
+    public function findManyByTagName(string $tagName, bool $published, string $dateOrder)
+    {
+        $result = $this->createQueryBuilder('p')
+            ->innerJoin('p.tag', 't')
+            ->andWhere('t.name = :name')
+            ->setParameter('name', $tagName)
+            ->addOrderBy(new OrderBy('p.publication_date', $dateOrder));
+
+        if ($published) {
+            $result->andWhere('p.published = :published')
+                ->setParameter('published', $published);
+        }
+
+        return $result
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

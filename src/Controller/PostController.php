@@ -21,12 +21,11 @@ class PostController extends AbstractController
     public function getAll(?int $publishedOnly = 0, ?int $dateOrder = 0, ?string $tag = '') : JsonResponse
     {
         $dateOrder = $dateOrder ? 'ASC' : 'DESC';
-        $conditions = $publishedOnly ? ['published' => true] : [];
+        $published = $publishedOnly ? true : false;
 
         $posts = $this->getDoctrine()
             ->getRepository(Post::class)
-            ->findBy($conditions,
-                ['publication_date' => $dateOrder]);
+            ->findManyByTagName($tag, $published, $dateOrder);
 
         $response = [];
 
