@@ -52,8 +52,8 @@ class PostController extends AbstractController
             'error' => null,
             'result' => [
                 'posts' => $response,
-            ], Response::HTTP_OK,
-        ]);
+            ]
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -72,8 +72,7 @@ class PostController extends AbstractController
             'error' => null,
             'result' => [
                 'posts' => $response,
-            ], Response::HTTP_OK,
-        ]);
+            ]], Response::HTTP_OK);
     }
 
     /**
@@ -103,8 +102,7 @@ class PostController extends AbstractController
             'error' => null,
             'result' => [
                 'posts' => $response,
-            ], Response::HTTP_OK,
-        ]);
+            ]], Response::HTTP_OK);
     }
 
     /**
@@ -166,8 +164,7 @@ class PostController extends AbstractController
             'error' => null,
             'result' => [
                 'id' => $post->getId(),
-            ], Response::HTTP_OK,
-        ]);
+            ]], Response::HTTP_OK);
     }
 
     private function getPostDataFromRequest(string $requestJson)
