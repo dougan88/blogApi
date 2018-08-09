@@ -16,9 +16,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class PostController extends AbstractController
 {
     /**
-     * @Route("/posts/all/{publishedOnly}/{dateOrder}", name="get_all", methods={"GET"})
+     * @Route("/posts/all/{publishedOnly}/{dateOrder}/{tag}", name="get_all", methods={"GET"})
      */
-    public function getAll(?int $publishedOnly = 0, ?int $dateOrder = 0)
+    public function getAll(?int $publishedOnly = 0, ?int $dateOrder = 0, ?string $tag = '') : JsonResponse
     {
         $dateOrder = $dateOrder ? 'ASC' : 'DESC';
         $conditions = $publishedOnly ? ['published' => true] : [];
@@ -46,7 +46,7 @@ class PostController extends AbstractController
     /**
      * @Route("/posts/one/{id}", name="get_one", methods={"GET"})
      */
-    public function getOne($id)
+    public function getOne($id) : JsonResponse
     {
         $post = $this->getDoctrine()
             ->getRepository(Post::class)
@@ -65,7 +65,7 @@ class PostController extends AbstractController
     /**
      * @Route("/posts/{id}", name="update_one", methods={"PUT"})s
      */
-    public function updateOne($id, EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator)
+    public function updateOne($id, EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator) : JsonResponse
     {
         $post = $this->getDoctrine()
             ->getRepository(Post::class)
@@ -95,7 +95,7 @@ class PostController extends AbstractController
     /**
      * @Route("/posts/{id}", name="delete_one", methods={"DELETE"})
      */
-    public function deleteOne($id, EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator)
+    public function deleteOne($id, EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator) : JsonResponse
     {
         $post = $this->getDoctrine()
             ->getRepository(Post::class)
@@ -122,7 +122,7 @@ class PostController extends AbstractController
     /**
      * @Route("/posts", name="post", methods={"POST"})
      */
-    public function createOne(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator)
+    public function createOne(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator) : JsonResponse
     {
         $post = $post->createPost($request->getContent());
 
@@ -151,7 +151,7 @@ class PostController extends AbstractController
             ]], Response::HTTP_OK);
     }
 
-    private function formatResponse(Post $post)
+    private function formatResponse(Post $post) : array
     {
         return [
             'title' => $post->getTitle(),
@@ -161,7 +161,7 @@ class PostController extends AbstractController
         ];
     }
 
-    private function setTags(string $requestJson, Post $post)
+    private function setTags(string $requestJson, Post $post) : Post
     {
         $postData = json_decode($requestJson);
 
