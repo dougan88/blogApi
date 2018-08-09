@@ -30,7 +30,7 @@ Run migrations:
 
 #### Creating a new post:
 ```
-POST: http://symfony.test/posts
+POST: http://blog.test/posts
 ```
 
 ```json
@@ -54,6 +54,36 @@ POST: http://symfony.test/posts
   "error": null,
   "result": {
     "id": 9
+  }
+}
+```
+---------------
+#### Retrieving all posts with filters:
+```
+GET: http://blog.test/posts/all/[published posts only: 1/0]/[sort order: ASC/DESC - 1/0]/[tag name]
+     http://blog.test/posts/all/0/0/science
+```
+---------------
+
+#### Response:
+
+```json
+{
+    "success": true,
+    "error": null,
+    "result": {
+    "posts": [
+      {
+        "title": "testTitle",
+        "body": "test body",
+        "publication_date": {
+        "date": "2018-08-09 17:49:46.000000",
+        "timezone_type": 3,
+        "timezone": "UTC"
+      },
+        "published": false
+      }
+    ],
   }
 }
 ```
