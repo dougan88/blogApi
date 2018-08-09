@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Tag;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -140,6 +141,8 @@ class PostController extends AbstractController
 
         $entityManager->flush();
 
+        $post = $this->setTags($request->getContent(), $post);
+
         return new JsonResponse([
             'success' => true,
             'error' => null,
@@ -156,5 +159,37 @@ class PostController extends AbstractController
             'publication_date' => $post->getPublicationDate(),
             'published' => $post->getPublished(),
         ];
+    }
+
+    private function setTags(string $requestJson, Post $post)
+    {
+        $postData = json_decode($requestJson);
+
+        $tagsList = $postData->tag ?? '';
+
+        if (!empty($tagsList) && is_array($tagsList)) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+
+            foreach ($tagsList as $tagName) {
+
+                $tag = $this->getDoctrine()
+                    ->getRepository(Tag::class)
+                    ->findOneBy(['name'=>$tagName]);
+
+                if (!$tag) {
+                    $tag = new Tag();
+                    $tag->setName($tagName);
+                }
+                $entityManager->persist($tag);
+                $entityManager->flush();
+
+                $post->addTag($tag);
+                $entityManager->persist($post);
+                $entityManager->flush();
+            }
+        }
+
+        return $post;
     }
 }
