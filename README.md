@@ -6,11 +6,12 @@ More changes and documentation are on the way.
 Installation:
 
 
+```
 git clone https://github.com/dougan88/blogApi blog
-
 cd blog
-
 composer install
+```
+
 
 
 Modify your database credentials in .env file. Ex.:
