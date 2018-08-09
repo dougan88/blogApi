@@ -7,7 +7,5 @@ Installation:
 
 
 git clone https://github.com/dougan88/blogApi blog
-
 cd blog
-
 composer install
