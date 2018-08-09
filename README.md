@@ -31,8 +31,12 @@ Run migrations:
 Creating a new post:
 ```json
 {
-"title":"testTitle", 
-"body": "bodySeveneight", 
-"tag":["sport", "science"]
+  "title":"testTitle", 
+  "body": "test body", 
+  "tag":
+    [
+      "sport", 
+      "science"
+    ]
 }
 ```
