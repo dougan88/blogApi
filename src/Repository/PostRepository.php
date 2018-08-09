@@ -25,20 +25,25 @@ class PostRepository extends ServiceEntityRepository
      *
      * Returns an array of Post objects filtered by tag, published and publication_date
      */
-    public function findManyByTagName(string $tagName, bool $published, string $dateOrder)
+    public function findManyByConditions(string $tagName, bool $published, string $dateOrder)
     {
-        $result = $this->createQueryBuilder('p')
-            ->innerJoin('p.tag', 't')
-            ->andWhere('t.name = :name')
-            ->setParameter('name', $tagName)
-            ->addOrderBy(new OrderBy('p.publication_date', $dateOrder));
+        $result = $this->createQueryBuilder('p');
+
+        if ($tagName) {
+            $result
+                ->innerJoin('p.tag', 't')
+                ->andWhere('t.name = :name')
+                ->setParameter('name', $tagName);
+        }
 
         if ($published) {
-            $result->andWhere('p.published = :published')
+            $result
+                ->andWhere('p.published = :published')
                 ->setParameter('published', $published);
         }
 
         return $result
+            ->addOrderBy(new OrderBy('p.publication_date', $dateOrder))
             ->getQuery()
             ->getResult();
     }

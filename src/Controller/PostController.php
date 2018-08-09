@@ -28,7 +28,7 @@ class PostController extends AbstractController
         //Use repository method, specially written for required filters
         $posts = $this->getDoctrine()
             ->getRepository(Post::class)
-            ->findManyByTagName($tag, $published, $dateOrder);
+            ->findManyByConditions($tag, $published, $dateOrder);
 
         $response = [];
 
