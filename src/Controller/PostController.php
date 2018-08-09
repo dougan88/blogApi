@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Entity\Tag;
-use Doctrine\ORM\EntityManager;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
@@ -121,7 +121,7 @@ class PostController extends AbstractController
     /**
      * @Route("/posts", name="post", methods={"POST"})
      */
-    public function createOne(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator) : JsonResponse
+    public function createOne(EntityManagerInterface $entityManager, Request $request, Post $post, ValidatorInterface $validator, ContainerInterface $container,\Swift_Mailer $mailer) : JsonResponse
     {
         $post = $post->createPost($request->getContent());
 
@@ -141,6 +141,12 @@ class PostController extends AbstractController
         $entityManager->flush();
 
         $post = $this->setTags($request->getContent(), $post);
+
+        $adminEmail = $container->getParameter('admin.email');
+
+        if ($adminEmail) {
+            $this->sendCreatedEmail($adminEmail, $mailer);
+        }
 
         return new JsonResponse([
             'success' => true,
@@ -190,5 +196,18 @@ class PostController extends AbstractController
         }
 
         return $post;
+    }
+
+    private function sendCreatedEmail(string $adminEmail, \Swift_Mailer $mailer)
+    {
+        $message = (new \Swift_Message('Post Created'))
+            ->setFrom('no-reply@example.com')
+            ->setTo($adminEmail)
+            ->setBody(
+                'Post created',
+                'text/html'
+            );
+
+        return $mailer->send($message);
     }
 }

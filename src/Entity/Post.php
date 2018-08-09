@@ -162,7 +162,6 @@ class Post
         $this->setBody($postData['body']);
         $this->setPublished($postData['published']);
         $this->setPublicationDate($postData['publication_date']);
-//        $this->addTag($postData['tag']);
 
         return $this;
     }
